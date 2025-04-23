@@ -1,41 +1,78 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShortcutTemplate } from "@shared/schema";
-import { Plus } from "lucide-react";
+import { ShortcutTemplate, Shortcut } from "@shared/schema";
+import { Plus, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
+import { suggestDailyShortcut } from "@/lib/openai";
 
 export function DailySuggestion() {
   const { toast } = useToast();
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [aiSuggestion, setAiSuggestion] = useState<Shortcut | null>(null);
   
-  // Fetch daily suggestion from API
-  const { data: dailySuggestion, isLoading, error } = useQuery({
+  // Fetch fallback suggestion from templates API
+  const { data: templateSuggestion, isLoading: isTemplateLoading, error: templateError } = useQuery({
     queryKey: ['/api/templates'],
     select: (data: ShortcutTemplate[]) => {
-      // For now, just select the first template as the daily suggestion
-      // In a real app, this would be a personalized suggestion from the backend
+      // For now, just select the first template as the fallback suggestion
       return data && data.length > 0 ? data[0] : null;
-    }
+    },
+    // Disable this query if we already have an AI suggestion
+    enabled: !aiSuggestion
   });
+  
+  // Get the actual suggestion to display (AI or template-based)
+  const dailySuggestion = aiSuggestion || templateSuggestion;
+  const isLoading = !aiSuggestion && isTemplateLoading;
+  const error = !aiSuggestion && templateError;
 
+  // Fetch a personalized suggestion on component mount
   useEffect(() => {
-    if (dailySuggestion) {
-      // Update the timestamp when we get a new suggestion
-      setLastUpdated(new Date());
+    fetchAiSuggestion();
+  }, []);
+
+  // Function to get a fresh AI suggestion
+  const fetchAiSuggestion = async () => {
+    setIsRefreshing(true);
+    try {
+      // Mock user ID 1 for now
+      const suggestion = await suggestDailyShortcut(1);
+      if (suggestion) {
+        setAiSuggestion(suggestion as Shortcut);
+        setLastUpdated(new Date());
+      }
+    } catch (error) {
+      console.error("Failed to get AI suggestion:", error);
+      toast({
+        title: "Suggestion Error",
+        description: "Could not generate a personalized suggestion. Showing a template instead.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRefreshing(false);
     }
-  }, [dailySuggestion]);
+  };
+
+  const handleRefresh = () => {
+    fetchAiSuggestion();
+  };
 
   const handleAdd = () => {
+    if (!dailySuggestion) return;
+    
     toast({
       title: "Shortcut Added",
-      description: `${dailySuggestion?.title} has been added to your library`,
+      description: `${dailySuggestion.title} has been added to your library`,
     });
   };
 
   const handleViewDetails = () => {
+    if (!dailySuggestion) return;
+    
     // This would navigate to a detailed view in a real app
     toast({
       title: "View Details",

@@ -30,9 +30,9 @@ export async function generateShortcut(
       { prompt, userId }
     );
     return await response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error generating shortcut:", error);
-    throw new Error("Failed to generate shortcut: " + error.message);
+    throw new Error("Failed to generate shortcut: " + (error.message || "Unknown error"));
   }
 }
 
@@ -48,9 +48,9 @@ export async function exportToJellycuts(
       { actions, title, description }
     );
     return await response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error exporting to Jellycuts:", error);
-    throw new Error("Failed to export to Jellycuts: " + error.message);
+    throw new Error("Failed to export to Jellycuts: " + (error.message || "Unknown error"));
   }
 }
 
@@ -59,13 +59,34 @@ export async function suggestDailyShortcut(
   userId?: number
 ): Promise<GenerateShortcutResponse | null> {
   try {
-    // This would ideally call a backend API that analyzes user patterns
-    // and provides a personalized suggestion
-    // For now, we'll mock the response for a user's morning routine
+    // Get current time to provide context-aware suggestions
+    const now = new Date();
+    const hour = now.getHours();
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 6 = Saturday
     
-    const mockPrompt = "Suggest a shortcut for a morning routine that includes weather, calendar, and commute information";
-    return await generateShortcut(mockPrompt, userId);
-  } catch (error) {
+    // Create a contextual prompt based on time of day
+    let contextualPrompt = "";
+    
+    if (hour >= 5 && hour < 10) {
+      contextualPrompt = "Suggest a smart morning routine shortcut that includes checking weather, calendar events, and commute information.";
+    } else if (hour >= 10 && hour < 16) {
+      contextualPrompt = "Suggest a productivity shortcut that helps organize tasks, send quick messages, and check project status.";
+    } else if (hour >= 16 && hour < 22) {
+      contextualPrompt = "Suggest an evening shortcut that helps wind down, summarize the day's tasks, and prepare for tomorrow.";
+    } else {
+      contextualPrompt = "Suggest a shortcut that helps with late night focus, reducing screen brightness, and enabling focus modes.";
+    }
+    
+    // Add weekend/weekday context
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      contextualPrompt += " Make it suitable for weekend activities.";
+    } else {
+      contextualPrompt += " Make it suitable for a work day.";
+    }
+    
+    // Make the API call with our smart contextual prompt
+    return await generateShortcut(contextualPrompt, userId);
+  } catch (error: any) {
     console.error("Error suggesting daily shortcut:", error);
     return null;
   }
