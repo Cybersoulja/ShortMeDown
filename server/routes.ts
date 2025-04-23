@@ -31,8 +31,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userData = insertUserSchema.parse(req.body);
       const user = await storage.createUser(userData);
       res.status(201).json(user);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid user data", error: error.message });
+    } catch (error: any) {
+      res.status(400).json({ message: "Invalid user data", error: error.message || "Unknown error" });
     }
   });
 
@@ -81,8 +81,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const shortcutData = insertShortcutSchema.parse(req.body);
       const shortcut = await storage.createShortcut(shortcutData);
       res.status(201).json(shortcut);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid shortcut data", error: error.message });
+    } catch (error: any) {
+      res.status(400).json({ message: "Invalid shortcut data", error: error.message || "Unknown error" });
     }
   });
 
