@@ -1,0 +1,208 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 207 90% 54%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 60 4.8% 95.9%;
+  --secondary-foreground: 24 9.8% 10%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 20 14.3% 4.1%;
+  --radius: 0.5rem;
+  
+  /* iOS specific colors */
+  --ios-blue: 211 100% 50%;
+  --ios-green: 142 70% 49%;
+  --ios-orange: 31 100% 50%;
+  --ios-red: 4 100% 59%;
+  --ios-yellow: 48 100% 50%;
+  --ios-gray-1: 240 5% 57%;
+  --ios-gray-2: 240 6% 69%;
+  --ios-gray-3: 240 5% 77%;
+  --ios-gray-4: 240 6% 97%;
+  --ios-gray-5: 240 5% 96%;
+  --ios-dark: 240 4% 12%;
+  
+  /* Chart colors for later use */
+  --chart-1: var(--ios-blue);
+  --chart-2: var(--ios-orange);
+  --chart-3: var(--ios-green);
+  --chart-4: var(--ios-red);
+  --chart-5: var(--ios-yellow);
+  
+  /* Sidebar colors (unused but kept for consistency) */
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 20 14.3% 4.1%;
+  --sidebar-primary: 207 90% 54%;
+  --sidebar-primary-foreground: 211 100% 99%;
+  --sidebar-accent: 60 4.8% 95.9%;
+  --sidebar-accent-foreground: 24 9.8% 10%;
+  --sidebar-border: 20 5.9% 90%;
+  --sidebar-ring: 20 14.3% 4.1%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 207 90% 54%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* iOS specific utility classes */
+.ios-shadow {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.ios-card {
+  border-radius: 12px;
+  background: white;
+}
+
+/* Animation for waveform visualization */
+@keyframes waveform {
+  0% { height: 10px; }
+  50% { height: 30px; }
+  100% { height: 10px; }
+}
+
+/* Background gradients for shortcut blocks */
+.shortcut-block {
+  background: linear-gradient(135deg, rgba(255,149,0,0.1) 0%, rgba(255,149,0,0.2) 100%);
+  border-left: 3px solid #FF9500;
+}
+
+/* iOS specific colors for direct use */
+.text-ios-blue {
+  color: hsl(var(--ios-blue));
+}
+
+.text-ios-green {
+  color: hsl(var(--ios-green));
+}
+
+.text-ios-orange {
+  color: hsl(var(--ios-orange));
+}
+
+.text-ios-red {
+  color: hsl(var(--ios-red));
+}
+
+.text-ios-yellow {
+  color: hsl(var(--ios-yellow));
+}
+
+.text-ios-gray-1 {
+  color: hsl(var(--ios-gray-1));
+}
+
+.text-ios-gray-2 {
+  color: hsl(var(--ios-gray-2));
+}
+
+.text-ios-gray-3 {
+  color: hsl(var(--ios-gray-3));
+}
+
+.text-ios-gray-4 {
+  color: hsl(var(--ios-gray-4));
+}
+
+.text-ios-gray-5 {
+  color: hsl(var(--ios-gray-5));
+}
+
+.text-ios-dark {
+  color: hsl(var(--ios-dark));
+}
+
+.bg-ios-blue {
+  background-color: hsl(var(--ios-blue));
+}
+
+.bg-ios-green {
+  background-color: hsl(var(--ios-green));
+}
+
+.bg-ios-orange {
+  background-color: hsl(var(--ios-orange));
+}
+
+.bg-ios-red {
+  background-color: hsl(var(--ios-red));
+}
+
+.bg-ios-yellow {
+  background-color: hsl(var(--ios-yellow));
+}
+
+.bg-ios-gray-1 {
+  background-color: hsl(var(--ios-gray-1));
+}
+
+.bg-ios-gray-2 {
+  background-color: hsl(var(--ios-gray-2));
+}
+
+.bg-ios-gray-3 {
+  background-color: hsl(var(--ios-gray-3));
+}
+
+.bg-ios-gray-4 {
+  background-color: hsl(var(--ios-gray-4));
+}
+
+.bg-ios-gray-5 {
+  background-color: hsl(var(--ios-gray-5));
+}
+
+.bg-ios-dark {
+  background-color: hsl(var(--ios-dark));
+}
+
+.border-ios-gray-3 {
+  border-color: hsl(var(--ios-gray-3));
+}
+
+.border-ios-gray-4 {
+  border-color: hsl(var(--ios-gray-4));
+}
