@@ -3,6 +3,8 @@ import {
   shortcuts, type Shortcut, type InsertShortcut,
   shortcutTemplates, type ShortcutTemplate, type InsertTemplate
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, ilike, and } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -26,134 +28,114 @@ export interface IStorage {
   searchShortcutTemplates(query: string): Promise<ShortcutTemplate[]>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private shortcuts: Map<number, Shortcut>;
-  private shortcutTemplates: Map<number, ShortcutTemplate>;
-  private userId: number;
-  private shortcutId: number;
-  private templateId: number;
-
+export class DatabaseStorage implements IStorage {
   constructor() {
-    this.users = new Map();
-    this.shortcuts = new Map();
-    this.shortcutTemplates = new Map();
-    this.userId = 1;
-    this.shortcutId = 1;
-    this.templateId = 1;
-    
-    // Populate with starter templates
+    // Initialize with some template data on first run
     this.initializeTemplates();
   }
 
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.userId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   async updateUserPreferences(userId: number, preferences: Record<string, any>): Promise<User | undefined> {
-    const user = await this.getUser(userId);
-    if (!user) return undefined;
-
-    const updatedUser = {
-      ...user,
-      preferences: { ...user.preferences, ...preferences }
-    };
-    this.users.set(userId, updatedUser);
-    return updatedUser;
+    const [user] = await db
+      .update(users)
+      .set({ preferences })
+      .where(eq(users.id, userId))
+      .returning();
+    return user || undefined;
   }
 
   // Shortcut methods
   async getShortcut(id: number): Promise<Shortcut | undefined> {
-    return this.shortcuts.get(id);
+    const [shortcut] = await db.select().from(shortcuts).where(eq(shortcuts.id, id));
+    return shortcut || undefined;
   }
 
   async getUserShortcuts(userId: number): Promise<Shortcut[]> {
-    return Array.from(this.shortcuts.values()).filter(
-      (shortcut) => shortcut.userId === userId
-    );
+    return await db.select().from(shortcuts).where(eq(shortcuts.userId, userId));
   }
 
   async createShortcut(insertShortcut: InsertShortcut): Promise<Shortcut> {
-    const id = this.shortcutId++;
-    const now = new Date();
-    const shortcut: Shortcut = { 
-      ...insertShortcut, 
-      id, 
-      createdAt: now,
-      lastUsed: now,
-    };
-    this.shortcuts.set(id, shortcut);
+    const [shortcut] = await db
+      .insert(shortcuts)
+      .values(insertShortcut)
+      .returning();
     return shortcut;
   }
 
   async updateShortcut(id: number, shortcutData: Partial<InsertShortcut>): Promise<Shortcut | undefined> {
-    const shortcut = await this.getShortcut(id);
-    if (!shortcut) return undefined;
-
-    const updatedShortcut = { ...shortcut, ...shortcutData };
-    this.shortcuts.set(id, updatedShortcut);
-    return updatedShortcut;
+    const [shortcut] = await db
+      .update(shortcuts)
+      .set(shortcutData)
+      .where(eq(shortcuts.id, id))
+      .returning();
+    return shortcut || undefined;
   }
 
   async deleteShortcut(id: number): Promise<boolean> {
-    return this.shortcuts.delete(id);
+    const result = await db.delete(shortcuts).where(eq(shortcuts.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
   async incrementShortcutUsage(id: number): Promise<boolean> {
     const shortcut = await this.getShortcut(id);
     if (!shortcut) return false;
 
-    const updatedShortcut = { 
-      ...shortcut,
-      usageCount: shortcut.usageCount + 1,
-      lastUsed: new Date()
-    };
-    
-    this.shortcuts.set(id, updatedShortcut);
-    return true;
+    const [updated] = await db
+      .update(shortcuts)
+      .set({ 
+        usageCount: shortcut.usageCount + 1,
+        lastUsed: new Date()
+      })
+      .where(eq(shortcuts.id, id))
+      .returning();
+    return !!updated;
   }
 
   // Template methods
   async getShortcutTemplate(id: number): Promise<ShortcutTemplate | undefined> {
-    return this.shortcutTemplates.get(id);
+    const [template] = await db.select().from(shortcutTemplates).where(eq(shortcutTemplates.id, id));
+    return template || undefined;
   }
 
   async getAllShortcutTemplates(): Promise<ShortcutTemplate[]> {
-    return Array.from(this.shortcutTemplates.values());
+    return await db.select().from(shortcutTemplates);
   }
 
   async getShortcutTemplatesByCategory(category: string): Promise<ShortcutTemplate[]> {
-    return Array.from(this.shortcutTemplates.values()).filter(
-      (template) => template.category === category
-    );
+    return await db.select().from(shortcutTemplates).where(eq(shortcutTemplates.category, category));
   }
 
   async searchShortcutTemplates(query: string): Promise<ShortcutTemplate[]> {
-    const lowercaseQuery = query.toLowerCase();
-    return Array.from(this.shortcutTemplates.values()).filter(
-      (template) => 
-        template.title.toLowerCase().includes(lowercaseQuery) ||
-        template.description.toLowerCase().includes(lowercaseQuery) ||
-        template.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery))
+    const lowercaseQuery = `%${query.toLowerCase()}%`;
+    return await db.select().from(shortcutTemplates).where(
+      ilike(shortcutTemplates.title, lowercaseQuery)
     );
   }
 
   // Initialize with some template shortcuts
-  private initializeTemplates() {
+  private async initializeTemplates() {
+    // Check if templates already exist
+    const existing = await this.getAllShortcutTemplates();
+    if (existing.length > 0) return;
+
     const templates: InsertTemplate[] = [
       {
         title: "Morning Routine Assistant",
@@ -298,11 +280,14 @@ export class MemStorage implements IStorage {
       }
     ];
 
-    templates.forEach(template => {
-      const id = this.templateId++;
-      this.shortcutTemplates.set(id, { ...template, id });
-    });
+    try {
+      for (const template of templates) {
+        await db.insert(shortcutTemplates).values(template);
+      }
+    } catch (error) {
+      console.error('Failed to initialize templates:', error);
+    }
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
