@@ -5,24 +5,44 @@ import { insertShortcutSchema, insertUserSchema } from "@shared/schema";
 import OpenAI from "openai";
 import z from "zod";
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+// Initialize OpenAI client conditionally
+let openai: OpenAI | null = null;
 
-// Validate OpenAI API key on startup
-(async function validateApiKey() {
-  try {
-    // Simple API call to validate the key
-    await openai.models.list();
-    console.log("[OpenAI] API key validation successful");
-  } catch (error: any) {
-    console.error("[OpenAI] API key validation failed:", error.message);
-    if (error.code === 'invalid_api_key') {
-      console.error("[OpenAI] Please check that your API key is correct and properly configured.");
+function initializeOpenAI() {
+  if (process.env.OPENAI_API_KEY && !openai) {
+    try {
+      openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY
+      });
+      console.log("[OpenAI] Client initialized successfully");
+      return true;
+    } catch (error: any) {
+      console.error("[OpenAI] Initialization failed:", error.message);
+      return false;
     }
   }
-})();
+  return !!openai;
+}
+
+// Validate OpenAI API key on startup if available
+async function validateApiKey() {
+  if (initializeOpenAI()) {
+    try {
+      if (openai) {
+        await openai.models.list();
+        console.log("[OpenAI] API key validation successful");
+      }
+    } catch (error: any) {
+      console.error("[OpenAI] API key validation failed:", error.message);
+      console.log("[OpenAI] Please check that your API key is correct and properly configured.");
+    }
+  } else {
+    console.log("[OpenAI] No API key provided, using fallback templates");
+  }
+}
+
+// Defer validation to avoid blocking startup
+setTimeout(validateApiKey, 1000);
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // === User routes ===
@@ -190,9 +210,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let shortcutData;
       
       try {
-        // Attempt to use OpenAI API
+        // Attempt to use OpenAI API if available
+        if (!openai && !initializeOpenAI()) {
+          throw new Error("OpenAI not available");
+        }
+        
         // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-        const response = await openai.chat.completions.create({
+        const response = await openai!.chat.completions.create({
           model: "gpt-4o",
           messages: [
             {
