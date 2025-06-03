@@ -11,6 +11,7 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@cloudflare/workers-types": "^4.20250603.0",
     "@hookform/resolvers": "^3.10.0",
     "@jridgewell/trace-mapping": "^0.3.25",
     "@neondatabase/serverless": "^0.10.4",
@@ -54,6 +55,7 @@
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "framer-motion": "^11.13.1",
+    "hono": "^4.7.11",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.453.0",
     "memorystore": "^1.6.7",
@@ -73,6 +75,7 @@
     "tw-animate-css": "^1.2.5",
     "vaul": "^1.1.2",
     "wouter": "^3.3.5",
+    "wrangler": "^4.18.0",
     "ws": "^8.18.0",
     "zod": "^3.24.2",
     "zod-validation-error": "^3.4.0"

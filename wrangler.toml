@@ -1,0 +1,47 @@
+name = "ai-shortcut-companion"
+main = "worker/index.ts"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "ai-shortcut-companion-prod"
+
+[env.staging]
+name = "ai-shortcut-companion-staging"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "development"
+
+# KV Namespaces for caching and storage
+[[kv_namespaces]]
+binding = "SHORTCUT_CACHE"
+id = "shortcut_cache_namespace"
+preview_id = "shortcut_cache_preview"
+
+[[kv_namespaces]]
+binding = "USER_SESSIONS"
+id = "user_sessions_namespace"
+preview_id = "user_sessions_preview"
+
+# R2 Storage for assets
+[[r2_buckets]]
+binding = "ASSETS"
+bucket_name = "shortcut-assets"
+
+# Durable Objects for real-time features
+[[durable_objects.bindings]]
+name = "SHORTCUT_SYNC"
+class_name = "ShortcutSync"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["ShortcutSync"]
+
+# AI Gateway configuration
+[ai]
+binding = "AI"
+
+# Analytics Engine for usage tracking
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "shortcut_usage"
