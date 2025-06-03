@@ -4,6 +4,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { AirtableIntegration } from "@/components/airtable-integration";
+import { BearIntegration } from "@/components/bear-integration";
 import { 
   Bell,
   Moon,
@@ -12,10 +14,13 @@ import {
   Bookmark,
   Settings,
   Info,
-  HelpCircle
+  HelpCircle,
+  Database,
+  BookOpen
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Profile() {
   const { toast } = useToast();
