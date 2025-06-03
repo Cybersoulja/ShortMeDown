@@ -8,6 +8,12 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   preferences: jsonb("preferences").default({}).notNull(),
+  level: integer("level").default(1).notNull(),
+  experience: integer("experience").default(0).notNull(),
+  streak: integer("streak").default(0).notNull(),
+  lastActiveDate: timestamp("last_active_date").defaultNow(),
+  totalShortcuts: integer("total_shortcuts").default(0).notNull(),
+  totalUsage: integer("total_usage").default(0).notNull(),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -51,6 +57,36 @@ export const insertTemplateSchema = createInsertSchema(shortcutTemplates).omit({
   id: true,
 });
 
+// Achievements schema
+export const achievements = pgTable("achievements", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  icon: text("icon").notNull(),
+  category: text("category").notNull(),
+  requirement: integer("requirement").notNull(),
+  experienceReward: integer("experience_reward").notNull(),
+  rarity: text("rarity").notNull(), // bronze, silver, gold, platinum
+});
+
+// User achievements tracking
+export const userAchievements = pgTable("user_achievements", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  achievementId: integer("achievement_id").references(() => achievements.id).notNull(),
+  unlockedAt: timestamp("unlocked_at").defaultNow().notNull(),
+  progress: integer("progress").default(0).notNull(),
+});
+
+export const insertAchievementSchema = createInsertSchema(achievements).omit({
+  id: true,
+});
+
+export const insertUserAchievementSchema = createInsertSchema(userAchievements).omit({
+  id: true,
+  unlockedAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -60,6 +96,12 @@ export type InsertShortcut = z.infer<typeof insertShortcutSchema>;
 
 export type ShortcutTemplate = typeof shortcutTemplates.$inferSelect;
 export type InsertTemplate = z.infer<typeof insertTemplateSchema>;
+
+export type Achievement = typeof achievements.$inferSelect;
+export type InsertAchievement = z.infer<typeof insertAchievementSchema>;
+
+export type UserAchievement = typeof userAchievements.$inferSelect;
+export type InsertUserAchievement = z.infer<typeof insertUserAchievementSchema>;
 
 // Action type for easier handling
 export type ShortcutAction = {

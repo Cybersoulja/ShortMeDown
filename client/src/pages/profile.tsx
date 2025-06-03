@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { AirtableIntegration } from "@/components/airtable-integration";
 import { BearIntegration } from "@/components/bear-integration";
+import { GamificationDashboard } from "@/components/gamification-dashboard";
+import { gamificationService } from "@/lib/gamification";
 import { 
   Bell,
   Moon,
@@ -16,7 +18,8 @@ import {
   Info,
   HelpCircle,
   Database,
-  BookOpen
+  BookOpen,
+  Trophy
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
