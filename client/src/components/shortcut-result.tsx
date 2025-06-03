@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ShortcutAction } from "@shared/schema";
-import { ArrowLeft, Edit, Download } from "lucide-react";
+import { ArrowLeft, Edit, Download, Database, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { exportToJellycuts } from "@/lib/openai";
+import { airtableService } from "@/lib/airtable";
+import { bearService } from "@/lib/bear";
 import * as Icons from "lucide-react";
 import { integrationOptions } from "@/lib/shortcutTemplates";
 
@@ -34,11 +36,114 @@ export function ShortcutResult({
   const { toast } = useToast();
   const [isExporting, setIsExporting] = useState(false);
 
-  const handleAddToShortcuts = () => {
-    toast({
-      title: "Shortcut Added",
-      description: "The shortcut has been added to your library",
-    });
+  const handleAddToShortcuts = async () => {
+    try {
+      // Save shortcut locally first
+      toast({
+        title: "Shortcut Added",
+        description: "The shortcut has been added to your library",
+      });
+
+      // Auto-sync to integrations if configured
+      await handleIntegrationSync();
+    } catch (error) {
+      console.error('Error adding shortcut:', error);
+    }
+  };
+
+  const handleIntegrationSync = async () => {
+    const shortcutData = {
+      title,
+      description,
+      category: 'AI Generated',
+      tags,
+      actions,
+      integrations
+    };
+
+    // Sync to Airtable if configured
+    if (airtableService.isConfigured()) {
+      try {
+        await airtableService.createShortcutRecord(shortcutData);
+        toast({
+          title: "Synced to Airtable",
+          description: "Shortcut saved to your Airtable database",
+        });
+      } catch (error) {
+        console.error('Airtable sync failed:', error);
+      }
+    }
+
+    // Sync to Bear if available
+    if (bearService.isAvailable()) {
+      try {
+        await bearService.createShortcutNote(shortcutData);
+        toast({
+          title: "Saved to Bear",
+          description: "Shortcut documentation created in Bear",
+        });
+      } catch (error) {
+        console.error('Bear sync failed:', error);
+      }
+    }
+  };
+
+  const handleSaveToAirtable = async () => {
+    if (!airtableService.isConfigured()) {
+      toast({
+        title: "Airtable Not Configured",
+        description: "Please configure Airtable in your profile settings",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      await airtableService.createShortcutRecord({
+        title,
+        description,
+        category: 'AI Generated',
+        tags,
+        actions,
+        integrations
+      });
+      
+      toast({
+        title: "Saved to Airtable",
+        description: "Shortcut successfully saved to your database",
+      });
+    } catch (error) {
+      toast({
+        title: "Save Failed",
+        description: "Could not save to Airtable. Check your configuration.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleSaveToBear = async () => {
+    try {
+      const result = await bearService.createShortcutNote({
+        title,
+        description,
+        actions,
+        tags,
+        category: 'AI Generated'
+      });
+
+      if (result.success) {
+        toast({
+          title: "Saved to Bear",
+          description: "Shortcut documentation created in Bear",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Save Failed",
+        description: "Could not save to Bear",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleEdit = () => {
@@ -168,6 +273,31 @@ export function ShortcutResult({
                 </Button>
               );
             })}
+          </div>
+        </div>
+
+        <Separator className="my-4" />
+        
+        {/* Integration Actions */}
+        <div className="space-y-3">
+          <h3 className="font-medium text-sm">Quick Save Options</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              variant="outline"
+              onClick={handleSaveToAirtable}
+              className="flex items-center gap-2 py-3"
+            >
+              <Database className="h-4 w-4" />
+              Save to Airtable
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleSaveToBear}
+              className="flex items-center gap-2 py-3"
+            >
+              <BookOpen className="h-4 w-4" />
+              Save to Bear
+            </Button>
           </div>
         </div>
 

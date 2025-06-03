@@ -31,6 +31,11 @@ export default function Profile() {
     darkMode: false
   });
 
+  // Fetch user shortcuts for integrations
+  const { data: shortcuts = [] } = useQuery({
+    queryKey: ['/api/shortcuts'],
+  });
+
   const handlePreferenceChange = (preference: keyof typeof preferences) => {
     setPreferences(prev => {
       const updated = { ...prev, [preference]: !prev[preference] };
@@ -151,6 +156,36 @@ export default function Profile() {
           </CardContent>
         </Card>
         
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl flex items-center">
+              <Database className="h-5 w-5 mr-2 text-ios-blue" />
+              Integrations
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <AirtableIntegration 
+              shortcuts={Array.isArray(shortcuts) ? shortcuts : []} 
+              onShortcutSync={(shortcutId) => {
+                toast({
+                  title: "Shortcut Synced",
+                  description: "Successfully synced to Airtable",
+                });
+              }}
+            />
+            
+            <BearIntegration 
+              shortcuts={Array.isArray(shortcuts) ? shortcuts : []}
+              onNoteCreated={(noteId) => {
+                toast({
+                  title: "Note Created",
+                  description: "Shortcut saved to Bear",
+                });
+              }}
+            />
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-xl flex items-center">
