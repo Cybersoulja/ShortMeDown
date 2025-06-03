@@ -39,6 +39,23 @@ export default function Profile() {
     queryKey: ['/api/shortcuts'],
   });
 
+  // Mock gamification data for demo
+  const mockUserProgress = gamificationService.calculateUserProgress({
+    level: 3,
+    experience: 245,
+    streak: 5,
+    totalShortcuts: 12,
+    totalUsage: 89
+  });
+
+  const mockAchievements = gamificationService.getBuiltInAchievements().map((achievement, index) => ({
+    ...achievement,
+    id: index + 1,
+    isUnlocked: index < 4,
+    progress: index < 4 ? achievement.requirement : Math.floor(achievement.requirement * 0.6),
+    progressPercentage: index < 4 ? 100 : 60
+  }));
+
   const handlePreferenceChange = (preference: keyof typeof preferences) => {
     setPreferences(prev => {
       const updated = { ...prev, [preference]: !prev[preference] };
@@ -159,6 +176,21 @@ export default function Profile() {
           </CardContent>
         </Card>
         
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl flex items-center">
+              <Trophy className="h-5 w-5 mr-2 text-ios-blue" />
+              Progress & Achievements
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <GamificationDashboard 
+              userProgress={mockUserProgress}
+              achievements={mockAchievements}
+            />
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-xl flex items-center">

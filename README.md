@@ -1,63 +1,77 @@
 # AI Shortcut Companion
 
-A powerful AI-driven companion app for iOS users to create, understand, and optimize Shortcuts through natural language and voice input. Enhanced by Cloudflare edge computing for superior performance.
+An intelligent iOS Shortcuts companion app that helps users create, understand, and optimize automation workflows through natural language processing and voice input. Built with modern web technologies and enhanced by Cloudflare edge computing.
 
-## 🌟 Features
+## 🚀 Features
 
-- **Natural Language Processing**: Describe automation tasks in plain English
-- **Voice Assistant Mode**: Speak your requests and get instant shortcut generation
-- **Smart Recommendations**: Time-aware suggestions based on usage patterns
-- **App Integrations**: Seamless integration with Data Jar, Drafts, and Pushcut
-- **Shortcut Gallery**: Browse pre-built templates and community shortcuts
-- **Jellycuts Export**: Export shortcuts to Jellycuts script format
-- **Edge AI Processing**: 40-60% faster response times with Cloudflare Workers
+### Core Functionality
+- **AI-Powered Generation**: Create iOS Shortcuts using natural language descriptions
+- **Voice Assistant Mode**: Generate shortcuts through voice commands with speech recognition
+- **Shortcut Gallery**: Browse and discover curated shortcut templates by category
+- **Action Breakdown**: Detailed explanation of each shortcut action with visual icons
+- **Jellycuts Export**: Export shortcuts to Jellycuts format for iOS import
 
-## 🚀 Technology Stack
+### Advanced Features
+- **Gamification System**: Level up with experience points, achievements, and daily streaks
+- **Third-Party Integrations**: Connect with Airtable for data management and Bear for note-taking
+- **Cloudflare Edge Computing**: 40-60% faster AI processing with global edge distribution
+- **Progressive Web App**: Mobile-optimized interface with iOS-style design
 
-### Frontend
-- **React 18** with TypeScript
-- **Vite** for fast development and building
-- **TailwindCSS** for responsive styling
-- **shadcn/ui** component library
-- **TanStack Query** for data fetching
-- **Wouter** for lightweight routing
-
-### Backend
-- **Express.js** with TypeScript
-- **PostgreSQL** database with Drizzle ORM
-- **OpenAI GPT-4** for AI-powered generation
-- **Passport.js** for authentication
-
-### Cloudflare Integration
-- **Workers AI** for edge-based AI processing
-- **R2 Storage** for global asset delivery
-- **KV Storage** for intelligent caching
-- **Analytics Engine** for real-time insights
-- **Cloudflare Pages** for static site hosting
+### Integrations
+- **Airtable Integration**: Sync shortcuts to database for advanced organization
+- **Bear App Integration**: Save shortcut documentation and create notes
+- **OpenAI GPT-4o**: Advanced natural language processing for shortcut generation
+- **Cloudflare Workers**: Edge AI processing and global content delivery
 
 ## 🏗️ Architecture
 
+### Technology Stack
+- **Frontend**: React 18, TypeScript, Tailwind CSS, shadcn/ui
+- **Backend**: Node.js, Express, PostgreSQL, Drizzle ORM
+- **Infrastructure**: Cloudflare Workers, R2 Storage, Analytics Engine
+- **AI**: OpenAI GPT-4o, Cloudflare AI models
+- **Database**: PostgreSQL with persistent data storage
+
+### Deployment Infrastructure
+- **Main App**: `https://app.oneseco.com`
+- **API**: `https://api.oneseco.com` (Cloudflare Workers)
+- **Documentation**: `https://shortcuts.oneseco.com` (GitHub Pages)
+- **Repository**: `https://github.com/oneseco-media/ai-shortcut-companion`
+
+## 📁 Project Structure
+
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   React App     │───▶│  Cloudflare CDN  │───▶│  Workers API    │
-│  (Frontend)     │    │  shortcuts.      │    │  api.oneseco.   │
-└─────────────────┘    │  oneseco.com     │    │  com            │
-                       └──────────────────┘    └─────────────────┘
-                                                        │
-                                                        ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   PostgreSQL    │◀───│   Workers AI     │    │   R2 Storage    │
-│   Database      │    │   (Llama 2)      │    │   Assets/Cache  │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
+ai-shortcut-companion/
+├── client/                 # React frontend application
+│   ├── src/
+│   │   ├── components/     # Reusable UI components
+│   │   ├── pages/         # Application pages
+│   │   ├── lib/           # Utility libraries and services
+│   │   └── hooks/         # Custom React hooks
+├── server/                # Express backend server
+│   ├── index.ts          # Server entry point
+│   ├── routes.ts         # API route definitions
+│   ├── storage.ts        # Database storage layer
+│   └── db.ts             # Database configuration
+├── worker/                # Cloudflare Workers
+│   ├── index.ts          # Worker entry point
+│   ├── cloudflare-ai.ts  # AI processing logic
+│   ├── analytics.ts      # Usage analytics
+│   └── shortcut-cache.ts # Caching layer
+├── shared/               # Shared types and schemas
+│   └── schema.ts         # Database schema definitions
+├── docs/                 # Documentation website
+│   └── index.html        # Landing page
+└── scripts/              # Deployment scripts
 ```
 
-## 🛠️ Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 20+
+- Node.js 18+ and npm
 - PostgreSQL database
-- Cloudflare account
-- OpenAI API key (optional)
+- OpenAI API key
+- Cloudflare account (for Workers)
 
 ### Local Development
 
@@ -74,121 +88,100 @@ A powerful AI-driven companion app for iOS users to create, understand, and opti
 
 3. **Set up environment variables**
    ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
+   # Required environment variables
+   DATABASE_URL=postgresql://user:password@localhost:5432/shortcuts
+   OPENAI_API_KEY=your_openai_api_key
    ```
 
-4. **Set up the database**
+4. **Initialize the database**
    ```bash
    npm run db:push
    ```
 
-5. **Start development server**
+5. **Start the development server**
    ```bash
    npm run dev
    ```
 
-6. **Visit the application**
-   - Frontend: http://localhost:5000
-   - API: http://localhost:5000/api
+The application will be available at `http://localhost:5000`
 
-### Cloudflare Deployment
+## 🎮 Gamification System
 
-1. **Install Wrangler CLI**
-   ```bash
-   npm install -g wrangler
-   ```
+### User Progression
+- **Experience Points**: Earn XP for creating shortcuts, daily usage, and achievements
+- **Level System**: Progressive leveling with increasing XP requirements
+- **Daily Streaks**: Maintain momentum with consecutive day bonuses
+- **Achievement Categories**: Creation, Usage, Streaks, Integrations, and Social
 
-2. **Authenticate with Cloudflare**
-   ```bash
-   wrangler login
-   ```
+### Built-in Achievements
+- **First Steps**: Create your first shortcut (25 XP)
+- **Automation Master**: Create 100 shortcuts (250 XP)
+- **Power User**: Use shortcuts 50 times (75 XP)
+- **Streak Keeper**: Maintain a 7-day streak (100 XP)
+- **Connected**: Set up your first integration (50 XP)
 
-3. **Deploy to Cloudflare**
-   ```bash
-   ./scripts/deploy-cloudflare.sh
-   ```
+## 🔗 Integrations Guide
 
-4. **Configure custom domain**
-   - Set up DNS records for api.oneseco.com
-   - Configure Cloudflare Pages for shortcuts.oneseco.com
+### Airtable Integration
+1. Generate an API token at [airtable.com/create/tokens](https://airtable.com/create/tokens)
+2. Create a base for your shortcuts
+3. Configure the integration in Profile > Integrations
+4. Automatically sync shortcuts to your Airtable database
 
-## 📁 Project Structure
+### Bear App Integration
+- **iOS/macOS**: Direct URL scheme integration for seamless note creation
+- **Web**: Download shortcuts as Markdown files
+- **Features**: Auto-tagging, shortcut documentation, action logging
 
-```
-├── client/                 # React frontend application
-│   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   ├── pages/          # Application pages/routes
-│   │   ├── lib/            # Utility libraries and services
-│   │   └── hooks/          # Custom React hooks
-├── server/                 # Express.js backend
-│   ├── index.ts           # Main server entry point
-│   ├── routes.ts          # API route definitions
-│   ├── storage.ts         # Database storage layer
-│   └── db.ts              # Database configuration
-├── worker/                 # Cloudflare Workers
-│   ├── index.ts           # Worker entry point
-│   ├── cloudflare-ai.ts   # AI processing logic
-│   ├── shortcut-cache.ts  # Caching utilities
-│   └── analytics.ts       # Analytics tracking
-├── shared/                 # Shared types and schemas
-│   └── schema.ts          # Database schemas and types
-├── docs/                   # GitHub Pages documentation
-└── scripts/               # Deployment and utility scripts
-```
+### Cloudflare Workers Setup
+1. Deploy workers to `api.oneseco.com`
+2. Configure R2 storage for assets
+3. Set up Analytics Engine for usage tracking
+4. Enable AI models for edge processing
 
-## 🔧 Configuration
+## 📱 Mobile Experience
 
-### Environment Variables
+### iOS-Style Design
+- Native iOS design patterns and animations
+- Responsive layout optimized for mobile devices
+- Touch-friendly interface with gesture support
+- Progressive Web App capabilities
 
-```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/shortcuts
+### Voice Assistant Mode
+- Browser-based speech recognition
+- Real-time transcript display
+- Natural language processing for shortcut generation
+- Hands-free shortcut creation
 
-# OpenAI (optional - fallback to Cloudflare AI)
-OPENAI_API_KEY=sk-your-openai-key
+## 🛠️ API Reference
 
-# Cloudflare (for production deployment)
-CLOUDFLARE_API_TOKEN=your-cloudflare-token
-CLOUDFLARE_ACCOUNT_ID=your-account-id
-```
+### Core Endpoints
+- `GET /api/shortcuts` - Retrieve user shortcuts
+- `POST /api/shortcuts` - Create new shortcut
+- `POST /api/generate-shortcut` - AI shortcut generation
+- `GET /api/templates` - Browse shortcut templates
+- `POST /api/export-jellycuts` - Export to Jellycuts format
 
-### Cloudflare Configuration
-
-See [CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md) for detailed Cloudflare integration setup.
+### Authentication
+- Session-based authentication with PostgreSQL storage
+- User registration and login endpoints
+- Secure password hashing with bcrypt
 
 ## 🚀 Deployment
 
-### Production Deployment
+### Cloudflare Pages (Documentation)
+```bash
+# Automatic deployment via GitHub Actions
+git push origin main
+```
 
-1. **Main Application**
-   - Deploy to your preferred hosting platform
-   - Ensure environment variables are configured
-   - Set up PostgreSQL database
+### Cloudflare Workers (API)
+```bash
+wrangler deploy
+```
 
-2. **Cloudflare Workers**
-   ```bash
-   wrangler deploy --env production
-   ```
-
-3. **Cloudflare Pages** (Documentation)
-   - Connected to GitHub for automatic deployments
-   - Deploys to shortcuts.oneseco.com
-
-### GitHub Actions
-
-Automated deployment pipeline:
-- Builds and tests on every push
-- Deploys to Cloudflare Pages automatically
-- Runs database migrations
-
-## 📊 Performance
-
-- **Edge AI Processing**: 40-60% faster than centralized AI
-- **Global CDN**: 300+ edge locations worldwide
-- **Cache Hit Rate**: 98% for static assets
-- **Average Response Time**: <100ms
+### Main Application
+The application runs on Replit with automatic deployment pipeline.
 
 ## 🤝 Contributing
 
@@ -198,21 +191,74 @@ Automated deployment pipeline:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+## 🔧 Configuration
+
+### Environment Variables
+```env
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/shortcuts
+
+# AI Services
+OPENAI_API_KEY=your_openai_api_key
+
+# Cloudflare (Optional)
+CLOUDFLARE_API_TOKEN=your_cloudflare_token
+CLOUDFLARE_ACCOUNT_ID=your_account_id
+```
+
+### Database Schema
+The application uses PostgreSQL with Drizzle ORM:
+- **Users**: Authentication and gamification data
+- **Shortcuts**: User-created shortcuts with actions and metadata
+- **Templates**: Curated shortcut templates for discovery
+- **Achievements**: Gamification achievements and user progress
+
+## 📊 Performance
+
+### Cloudflare Edge Benefits
+- **40-60% faster AI processing** through edge computing
+- **Global CDN** for optimal loading times
+- **R2 Storage** for efficient asset delivery
+- **Analytics Engine** for real-time usage insights
+
+### Optimization Features
+- **Lazy loading** for images and components
+- **Code splitting** for faster initial load
+- **Caching strategies** for API responses
+- **Progressive enhancement** for mobile devices
+
+## 🐛 Troubleshooting
+
+### Common Issues
+1. **OpenAI API errors**: Verify API key configuration
+2. **Database connection**: Check PostgreSQL service and connection string
+3. **Cloudflare Workers**: Ensure proper domain configuration
+4. **Voice recognition**: Enable microphone permissions in browser
+
+### Development Tips
+- Use `npm run db:push` to sync schema changes
+- Check browser console for client-side errors
+- Monitor server logs for API issues
+- Test voice features in secure (HTTPS) context
+
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🔗 Links
+## 🙏 Acknowledgments
 
-- **Live Demo**: https://app.oneseco.com
-- **Documentation**: https://shortcuts.oneseco.com
-- **API Endpoint**: https://api.oneseco.com
-- **Issue Tracker**: https://github.com/oneseco-media/ai-shortcut-companion/issues
+- **OpenAI** for GPT-4o language model
+- **Cloudflare** for edge computing infrastructure
+- **shadcn/ui** for beautiful UI components
+- **Drizzle ORM** for type-safe database operations
+- **React** and **TypeScript** communities
 
-## 📧 Support
+## 📞 Support
 
-For support, email support@oneseco.com or open an issue on GitHub.
+- **Issues**: [GitHub Issues](https://github.com/oneseco-media/ai-shortcut-companion/issues)
+- **Documentation**: [shortcuts.oneseco.com](https://shortcuts.oneseco.com)
+- **API Status**: [api.oneseco.com/health](https://api.oneseco.com/health)
 
 ---
 
-Built with ❤️ by [oneseco.com](https://oneseco.com) • Powered by Cloudflare
+Built with ❤️ by the oneseco.com team. Empowering iOS users to automate their digital lives through intelligent shortcut generation.
