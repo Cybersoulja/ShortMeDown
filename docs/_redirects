@@ -1,0 +1,20 @@
+# Cloudflare Pages Redirects for oneseco.com
+
+# Redirect API calls to the Cloudflare Workers
+/api/* https://api.oneseco.com/:splat 200
+
+# Redirect app links to the main application
+/app/* https://app.oneseco.com/:splat 302
+
+# Redirect old GitHub links
+/github https://github.com/oneseco/ai-shortcut-companion 301
+
+# Redirect documentation
+/docs/* https://github.com/oneseco/ai-shortcut-companion/blob/main/:splat 301
+/setup https://github.com/oneseco/ai-shortcut-companion/blob/main/CLOUDFLARE_SETUP.md 301
+
+# Health check endpoint
+/health https://api.oneseco.com/health 200
+
+# 404 fallback
+/* /index.html 200

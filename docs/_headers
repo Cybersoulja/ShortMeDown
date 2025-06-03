@@ -1,0 +1,36 @@
+# Cloudflare Pages Headers Configuration for oneseco.com
+
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+# Cache static assets for 1 year
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache CSS and JS files for 1 month
+*.css
+  Cache-Control: public, max-age=2592000
+
+*.js
+  Cache-Control: public, max-age=2592000
+
+# Cache images for 1 week
+*.png
+  Cache-Control: public, max-age=604800
+
+*.jpg
+  Cache-Control: public, max-age=604800
+
+*.svg
+  Cache-Control: public, max-age=604800
+
+# Set CORS headers for API calls
+/api/*
+  Access-Control-Allow-Origin: https://app.oneseco.com
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, Authorization
