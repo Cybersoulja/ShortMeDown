@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Header } from "@/components/ui/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
   MoveDown,
   AlertCircle,
 } from "lucide-react";
+import * as Icons from "lucide-react";
 import {
   Dialog,
   DialogContent,
