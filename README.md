@@ -63,7 +63,7 @@ A powerful AI-driven companion app for iOS users to create, understand, and opti
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/oneseco/ai-shortcut-companion.git
+   git clone https://github.com/oneseco-media/ai-shortcut-companion.git
    cd ai-shortcut-companion
    ```
 
@@ -207,7 +207,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Live Demo**: https://app.oneseco.com
 - **Documentation**: https://shortcuts.oneseco.com
 - **API Endpoint**: https://api.oneseco.com
-- **Issue Tracker**: https://github.com/oneseco/ai-shortcut-companion/issues
+- **Issue Tracker**: https://github.com/oneseco-media/ai-shortcut-companion/issues
 
 ## 📧 Support
 

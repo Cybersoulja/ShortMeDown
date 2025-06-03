@@ -17,7 +17,7 @@ fi
 echo "📝 Setting up GitHub repository..."
 if ! git remote get-url origin > /dev/null 2>&1; then
     echo "Please create a GitHub repository and add it as origin:"
-    echo "git remote add origin https://github.com/oneseco/ai-shortcut-companion.git"
+    echo "git remote add origin https://github.com/oneseco-media/ai-shortcut-companion.git"
     exit 1
 fi
 
