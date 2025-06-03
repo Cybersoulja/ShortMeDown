@@ -2,11 +2,18 @@ name = "ai-shortcut-companion"
 main = "worker/index.ts"
 compatibility_date = "2024-01-01"
 
+# Custom domain configuration for oneseco.com
 [env.production]
 name = "ai-shortcut-companion-prod"
+route = "api.oneseco.com/*"
 
 [env.staging]
 name = "ai-shortcut-companion-staging"
+route = "staging-api.oneseco.com/*"
+
+# Development environment
+[env.development]
+name = "ai-shortcut-companion-dev"
 
 # Environment variables
 [vars]
