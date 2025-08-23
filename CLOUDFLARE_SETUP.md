@@ -30,8 +30,11 @@ wrangler login
 
 ### 2. Configure DNS Records
 In your Cloudflare dashboard for oneseco.com, add:
-- `api` CNAME → `your-worker.your-subdomain.workers.dev`
-- `staging-api` CNAME → `your-worker-staging.your-subdomain.workers.dev`
+- `app` CNAME → `your-replit-app.replit.dev` (Proxied)
+- `api` CNAME → `your-worker.your-subdomain.workers.dev` (Proxied)
+- `staging-api` CNAME → `your-worker-staging.your-subdomain.workers.dev` (Proxied)
+- `shortcuts` CNAME → `oneseco-media.github.io` (Proxied)
+- `www` CNAME → `oneseco.com` (Proxied)
 
 ### 3. Create Resources
 ```bash
@@ -77,6 +80,12 @@ Your Cloudflare Workers provide these enhanced endpoints:
 ### Analytics
 - `GET /api/analytics/usage` - Real-time usage statistics
 - `GET /health` - Service health check
+
+### Development Tools
+- `GET /oauth-callback` - Universal OAuth redirect handler
+- Supports GitHub, Google, Discord, Spotify, Twitch, LinkedIn, and more
+- Real-time parameter parsing and debugging interface
+- Essential for OAuth app development and testing
 
 ## Client Integration
 

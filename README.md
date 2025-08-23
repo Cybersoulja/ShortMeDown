@@ -16,6 +16,7 @@ An intelligent iOS Shortcuts companion app that helps users create, understand, 
 - **Third-Party Integrations**: Connect with Airtable for data management and Bear for note-taking
 - **Cloudflare Edge Computing**: 40-60% faster AI processing with global edge distribution
 - **Progressive Web App**: Mobile-optimized interface with iOS-style design
+- **Universal OAuth Handler**: Development-ready OAuth callback for testing external integrations
 
 ### Integrations
 - **Airtable Integration**: Sync shortcuts to database for advanced organization
@@ -162,6 +163,12 @@ The application will be available at `http://localhost:5000`
 - `GET /api/templates` - Browse shortcut templates
 - `POST /api/export-jellycuts` - Export to Jellycuts format
 
+### Development Tools
+- `GET /oauth-callback` - Universal OAuth redirect handler for development
+- Supports all major OAuth providers (GitHub, Google, Discord, Spotify, etc.)
+- Parameter parsing, color-coded display, and copy functionality
+- Ideal for testing OAuth integrations during app development
+
 ### Authentication
 - Session-based authentication with PostgreSQL storage
 - User registration and login endpoints
@@ -240,6 +247,8 @@ The application uses PostgreSQL with Drizzle ORM:
 - Check browser console for client-side errors
 - Monitor server logs for API issues
 - Test voice features in secure (HTTPS) context
+- Use `/oauth-callback` route for OAuth development testing
+- Configure redirect URI as `https://your-app.replit.dev/oauth-callback`
 
 ## 📄 License
 
