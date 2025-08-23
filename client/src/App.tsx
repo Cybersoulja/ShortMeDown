@@ -16,18 +16,22 @@ import OAuthCallback from "@/pages/oauth-callback";
 
 function Router() {
   return (
-    <div className="flex flex-col h-screen">
-      <Switch>
-        <Route path="/oauth-callback" component={OAuthCallback} />
-        <Route path="/" component={Home} />
-        <Route path="/explore" component={Explore} />
-        <Route path="/create" component={Create} />
-        <Route path="/library" component={Library} />
-        <Route path="/profile" component={Profile} />
-        <Route component={NotFound} />
-      </Switch>
-      <TabBar />
-    </div>
+    <Switch>
+      <Route path="/oauth-callback" component={OAuthCallback} />
+      <Route>
+        <div className="flex flex-col h-screen">
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/explore" component={Explore} />
+            <Route path="/create" component={Create} />
+            <Route path="/library" component={Library} />
+            <Route path="/profile" component={Profile} />
+            <Route component={NotFound} />
+          </Switch>
+          <TabBar />
+        </div>
+      </Route>
+    </Switch>
   );
 }
 
