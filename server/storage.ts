@@ -133,7 +133,13 @@ export class DatabaseStorage implements IStorage {
   // Initialize with some template shortcuts
   private async initializeTemplates() {
     // Check if templates already exist
-    const existing = await this.getAllShortcutTemplates();
+    let existing: ShortcutTemplate[];
+    try {
+      existing = await this.getAllShortcutTemplates();
+    } catch (error) {
+      console.error('[Storage] Could not check existing templates (database may be unavailable):', (error as Error).message);
+      return;
+    }
     if (existing.length > 0) return;
 
     const templates: InsertTemplate[] = [

@@ -61,13 +61,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (isNaN(id)) {
       return res.status(400).json({ message: "Invalid user ID" });
     }
-    
-    const user = await storage.getUser(id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    try {
+      const user = await storage.getUser(id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json(user);
+    } catch (error: any) {
+      res.status(503).json({ message: "Service unavailable", error: error.message });
     }
-    
-    res.json(user);
   });
 
   app.patch("/api/users/:id/preferences", async (req, res) => {
@@ -75,13 +77,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (isNaN(id)) {
       return res.status(400).json({ message: "Invalid user ID" });
     }
-    
-    const updatedUser = await storage.updateUserPreferences(id, req.body);
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
+    try {
+      const updatedUser = await storage.updateUserPreferences(id, req.body);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json(updatedUser);
+    } catch (error: any) {
+      res.status(503).json({ message: "Service unavailable", error: error.message });
     }
-    
-    res.json(updatedUser);
   });
 
   // === Shortcut routes ===
@@ -89,8 +93,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
     
     if (userId) {
-      const shortcuts = await storage.getUserShortcuts(userId);
-      res.json(shortcuts);
+      try {
+        const shortcuts = await storage.getUserShortcuts(userId);
+        res.json(shortcuts);
+      } catch (error: any) {
+        res.status(503).json({ message: "Service unavailable", error: error.message });
+      }
     } else {
       res.status(400).json({ message: "User ID is required" });
     }
@@ -111,13 +119,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (isNaN(id)) {
       return res.status(400).json({ message: "Invalid shortcut ID" });
     }
-    
-    const shortcut = await storage.getShortcut(id);
-    if (!shortcut) {
-      return res.status(404).json({ message: "Shortcut not found" });
+    try {
+      const shortcut = await storage.getShortcut(id);
+      if (!shortcut) {
+        return res.status(404).json({ message: "Shortcut not found" });
+      }
+      res.json(shortcut);
+    } catch (error: any) {
+      res.status(503).json({ message: "Service unavailable", error: error.message });
     }
-    
-    res.json(shortcut);
   });
 
   app.patch("/api/shortcuts/:id", async (req, res) => {
@@ -143,13 +153,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (isNaN(id)) {
       return res.status(400).json({ message: "Invalid shortcut ID" });
     }
-    
-    const success = await storage.deleteShortcut(id);
-    if (!success) {
-      return res.status(404).json({ message: "Shortcut not found" });
+    try {
+      const success = await storage.deleteShortcut(id);
+      if (!success) {
+        return res.status(404).json({ message: "Shortcut not found" });
+      }
+      res.status(204).end();
+    } catch (error: any) {
+      res.status(503).json({ message: "Service unavailable", error: error.message });
     }
-    
-    res.status(204).end();
   });
 
   app.post("/api/shortcuts/:id/usage", async (req, res) => {
@@ -157,29 +169,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (isNaN(id)) {
       return res.status(400).json({ message: "Invalid shortcut ID" });
     }
-    
-    const success = await storage.incrementShortcutUsage(id);
-    if (!success) {
-      return res.status(404).json({ message: "Shortcut not found" });
+    try {
+      const success = await storage.incrementShortcutUsage(id);
+      if (!success) {
+        return res.status(404).json({ message: "Shortcut not found" });
+      }
+      res.status(200).json({ success: true });
+    } catch (error: any) {
+      res.status(503).json({ message: "Service unavailable", error: error.message });
     }
-    
-    res.status(200).json({ success: true });
   });
 
   // === Template routes ===
   app.get("/api/templates", async (req, res) => {
     const category = req.query.category as string | undefined;
     const query = req.query.q as string | undefined;
-    
-    if (category) {
-      const templates = await storage.getShortcutTemplatesByCategory(category);
-      res.json(templates);
-    } else if (query) {
-      const templates = await storage.searchShortcutTemplates(query);
-      res.json(templates);
-    } else {
-      const templates = await storage.getAllShortcutTemplates();
-      res.json(templates);
+    try {
+      if (category) {
+        const templates = await storage.getShortcutTemplatesByCategory(category);
+        res.json(templates);
+      } else if (query) {
+        const templates = await storage.searchShortcutTemplates(query);
+        res.json(templates);
+      } else {
+        const templates = await storage.getAllShortcutTemplates();
+        res.json(templates);
+      }
+    } catch (error: any) {
+      res.status(503).json({ message: "Service unavailable", error: error.message });
     }
   });
 
@@ -188,13 +205,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (isNaN(id)) {
       return res.status(400).json({ message: "Invalid template ID" });
     }
-    
-    const template = await storage.getShortcutTemplate(id);
-    if (!template) {
-      return res.status(404).json({ message: "Template not found" });
+    try {
+      const template = await storage.getShortcutTemplate(id);
+      if (!template) {
+        return res.status(404).json({ message: "Template not found" });
+      }
+      res.json(template);
+    } catch (error: any) {
+      res.status(503).json({ message: "Service unavailable", error: error.message });
     }
-    
-    res.json(template);
   });
 
   // === OpenAI API routes ===
@@ -253,7 +272,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.warn("Using fallback template because of API key issues");
           
           // Get a random template to use as a fallback
-          const templates = await storage.getAllShortcutTemplates();
+          let templates: any[] = [];
+          try {
+            templates = await storage.getAllShortcutTemplates();
+          } catch {
+            templates = [];
+          }
           const fallbackTemplate = templates && templates.length > 0 
             ? templates[Math.floor(Math.random() * templates.length)]
             : generateFallbackTemplate(prompt);
