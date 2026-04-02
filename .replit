@@ -4,6 +4,7 @@ hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
+packages = ["gh"]
 
 [deployment]
 deploymentTarget = "autoscale"
@@ -42,4 +43,3 @@ args = "npm run dev"
 waitForPort = 5000
 
 [agent]
-integrations = ["javascript_openai==1.0.0", "styling_shadcn==1.0.0"]
